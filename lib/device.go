@@ -9,5 +9,5 @@ type Device struct {
 }
 
 func (d Device) String() string{
-    return fmt.Sprintf("Name: %s major: %d minor: %d", d.name, d.major, d.minor)
+    return fmt.Sprintf("(%s,%d-%d)", d.name, d.major, d.minor)
 }

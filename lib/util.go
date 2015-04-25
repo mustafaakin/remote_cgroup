@@ -13,10 +13,13 @@ var cgroups = map[string]*Cgroup {
     "blkio": nil,
 }
 
+var devices = map[string]*Device{}
+
+
 func Start(){
     fmt.Println("Hello from Util")
 
-    // scanDevFiles()
+    scanDevFiles()
     findCgroupMountPoints()
 }
 
@@ -57,8 +60,10 @@ func scanDevFiles(){
             // subtracting minor just in case then shiftit it 8 bytes, according to spec it can be 12 bits at most but no check is made
             major := (Rdev - minor) >> 8
 
-            dev := Device{name: file.Name(), minor: int(minor), major: int(major)}
-            fmt.Printf("%s \n", dev)
+            dev := &Device{name: file.Name(), minor: int(minor), major: int(major)}
+            devices[file.Name()] = dev
         }
     }
+
+    fmt.Printf("%s\n", devices)
 }
