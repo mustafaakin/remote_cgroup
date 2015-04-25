@@ -53,10 +53,9 @@ func scanDevFiles() {
     fmt.Printf("%#v\n", devicesByMajor)
 
 
-    fmt.Printf("%#v\n", getDevByMinMajor(8,1)) // should be sda1
+    fmt.Printf("%#v\n", getDevByMajMin(8,1)) // should be sda1
 }
 
-func getDevByMinMajor(major, minor int) *Device{
+func getDevByMajMin(major, minor int) *Device{
     return devicesByMajor[major][minor]
 }
-
