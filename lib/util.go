@@ -7,13 +7,22 @@ import (
     "strings"
 )
 
+var cgroups = map[string]*Cgroup {
+    "cpu": nil,
+    "cpuacct": nil,
+    "blkio": nil,
+}
+
 func Start(){
     fmt.Println("Hello from Util")
-    scanDevFiles()
+
+    // scanDevFiles()
     findCgroupMountPoints()
 }
 
 func findCgroupMountPoints(){
+    // manually write them
+
     // Create Map based on cgroup type and put them to respective places
     mountInfo, _ := ParseMountTable()
     for _, mount := range mountInfo {
@@ -21,9 +30,15 @@ func findCgroupMountPoints(){
             vfsOpts := strings.Split(mount.VfsOpts, ",")
             cgroup := vfsOpts[1]
 
-            fmt.Printf("%s %s\n", cgroup, mount.Mountpoint)
+            // Check if it is in allowed set of cgroups
+            _, ok := cgroups[cgroup]
+            if ok {
+                cgroups[cgroup] = &Cgroup{name: cgroup, mountPoint: mount.Mountpoint}
+            }
         }
     }
+
+    fmt.Printf("%s\n", cgroups)
 }
 
 func scanDevFiles(){
@@ -36,8 +51,11 @@ func scanDevFiles(){
             stat := Sys.(*syscall.Stat_t)
             Rdev := stat.Rdev
 
-            minor := 0xFF & Rdev // get first 8 bits only
-            major := (Rdev - minor) >> 8 // subtracting minor just in case
+            // get first 8 bits only
+            minor := 0xFF & Rdev
+
+            // subtracting minor just in case then shiftit it 8 bytes, according to spec it can be 12 bits at most but no check is made
+            major := (Rdev - minor) >> 8
 
             dev := Device{name: file.Name(), minor: int(minor), major: int(major)}
             fmt.Printf("%s \n", dev)
