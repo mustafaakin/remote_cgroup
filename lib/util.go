@@ -1,16 +1,15 @@
 package lib
 
 import (
-    "fmt"
+	"fmt"
 )
-
 
 var devices = map[string]*Device{}
 
+func Start() {
+	fmt.Println("Hello from Util")
 
-func Start(){
-    fmt.Println("Hello from Util")
+	scanDevFiles()
+	findCgroupMountPoints()
 
-    scanDevFiles()
-    findCgroupMountPoints()
 }
